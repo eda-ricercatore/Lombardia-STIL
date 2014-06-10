@@ -1,0 +1,81 @@
+STIL 1.0;
+Header {
+   Title Sample STIL Input File";
+   Date "Sat March 24 2007";
+}
+
+Signals {
+   scanIn1    In   { ScanIn; }
+   ScanIn2    In   { ScanIn; }
+   ScanOut1   Out  { ScanOut; }
+   ScanOut2   Out  { ScanOut; }
+   masterClk  In;  
+   scanClk    In;
+   piPin      In;
+   poPin      Out;
+}
+
+SignalGroups {
+   piPins = 'scanIn1+scanIn2+piPin+masterClk;+scanClk';
+   poPins = 'scanOut1+scanOut2+poPin';
+   allPins = 'piPins+poPins';
+}
+
+Timing {
+   WaveformTable baseWFT {
+      Period '100ns';
+      Waveforms {
+         piPins 	{ 01 { '0ns', D/U; } }
+         masterClk 	{ P  { '0ns' D; '50ns' U; '80ns' D; } }
+	 poPins		{ X  { '0ns' X; } }
+	 poPins		{ LH { '0ns' X; '40ns' H/L; } }
+      }
+    }
+   WaveformTable scanWFT {
+      Period '50ns';
+      Waveforms {
+         piPins         { 01   { '0ns', D/U; } }
+         scanClk      	{ P    { '0ns' D; '20ns' U; '30ns' D; } }
+         poPins         { XLH  { '0ns' X; '25ns' X/H/L; } }
+      }
+    }
+}
+
+Procedures {
+   scanProc {
+      W scanWFT;
+      C { piPins=0000P; poPins=XXX; }
+      V { piPins=1; }
+      Shift {
+	V { scanIn1=#; scanIn2=#; scanOut1=#; scanOut2=#; }
+      }
+   }
+}
+
+Macrodefs {
+   sampleSetup {
+     W baseWFT;
+     C { piPins=000P0; poPins=XXX; }
+     V { piPin = 1; }
+   }
+}
+
+Pattern samplePattern {
+   Macro sampleSetup;
+
+   SCANLOAD:
+   Call scanProc {
+      scanIn1=0101010101;
+      scanIn2=0011001100;
+   }
+   V  { piPin = 1; poPin = L; }
+   V  { piPin = 1; poPin = H; } 
+
+   SCANUNLOAD:
+   Call scanProc {
+      scanOut1=LHLHLHLHLH;
+      scanOut2=LLHHLLHHLL;
+   }
+} 
+
+
