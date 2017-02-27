@@ -4,11 +4,13 @@ Lombardia-STIL
 A C++ -based STIL parser.
 
 A parser is written for STIL test vectors to produce a FLAT tabular test pattern. In the tabular file, the scan sequences are to be represented as indicated in the original STIL file. See stil_parser.zip
+
 The code can be compiled and executed using "make all" in a UNIX environment. The make-file is named "Makefile", and a read-me file is named "readme.txt".
 
  To run the program, try: ./parse.out stil.1 output.txt
 
 The executable is named "parse.out" and the input file is "stil.1". The output file is named "output.txt".
+
 No error checking has been developed for the absence or modification of STIL keywords. I realized this halfway through the development of the software, and stuck to my original design plans due to a lack of time. I should have parsed the "stil.1" file to search for keywords, store them in a data structure. When I am processing the definitions of the macro, pattern, and other blocks, I can traverse these data structures to search for these keywords in the "stil.1" file. Instead, I chose to skip this step and assume that the instance names for the blocks are predefined, and will not be changed. I am wrong in assuming this. Consequently, when the parser processes the input file, it assumes that certain keywords must exist in the file as names for the block definitions or patterns, macros, and procedures.
 
 It is noted that the data on the PI/PO and scan pins (in output.txt) do not match. The length of each scan pins should be the same as that of the scan register. Ditto for PI/PO scan size plus load/unload vectors. My current lack of familiarity of the STIL interface has resulted in developing assumptions that affected the design of my algorithm. I recognize that the scan pins are fed from the primary output and input pins, but was unable to figure out how they were connected. Hence, I assumed that the conditions C indicated the initial values for the pins, and that the values V are the only input values passed into the pins. Since piPin had values passed to it twice in the pattern definition, it would have more data than the other input pins.
