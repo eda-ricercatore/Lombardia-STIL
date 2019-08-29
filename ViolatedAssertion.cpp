@@ -1,6 +1,5 @@
 /**
- * This is written by Zhiyang Ong, student number 6004-9194-12,
- * for EE 658 Homework #4
+ * This is written by Zhiyang Ong
  *
  * This Class ViolatedAssertion is thrown when an assertion is violated
  *
